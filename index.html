@@ -617,24 +617,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);ba
   <h1 class="mega-title">Sugar <em>Studio</em></h1>
   <p class="hero-sub">Pre-baked cookies, dreamy icing, and your favourite toppings — all in one box. No oven, no stress, just decorating fun.</p>
   <div class="hero-cta-row">
-    <a href="#order" class="btn-pill">Build your kit →</a>
+    <a href="#order" class="btn-pill">Order your kit →</a>
   </div>
 </section>
-
-<!-- ========== SPLIT BLOCK 1 ========== -->
-<div style="background:linear-gradient(180deg,var(--pink-bg) 0%,var(--cream) 100%);padding:0 20px;">
-<section class="split">
-  <div class="split-img">
-    <span class="split-img-deco d1">✨</span>
-    <span class="split-img-deco d2">🎨</span>
-    <span class="split-img-deco d3">🧁</span>
-  </div>
-  <div class="split-text">
-    <h2>Pick up your kit straight at school.</h2>
-    <p>Order online, pay by bank transfer or cash, and grab your decorating kit at ASHS.</p>
-  </div>
-</section>
-</div>
 
 <!-- ========== OUR KITS ========== -->
 <section class="section" id="kits">
@@ -651,7 +636,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);ba
           <h3>🍫 Chocolate Chip</h3>
           <div class="desc">A classic · 4 cookies · 3 icing · 4 toppings</div>
           <div class="price">$15<small>per kit</small></div>
-          <button class="btn-pill">Build kit</button>
+          <button class="btn-pill">Order kit</button>
         </div>
       </div>
       <div class="kit-card reveal" onclick="selectKitHome('velvet')">
@@ -660,7 +645,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);ba
           <h3>❤️ Red Velvet</h3>
           <div class="desc">For the romantics · 4 cookies · 3 icing · 4 toppings</div>
           <div class="price">$20<small>per kit</small></div>
-          <button class="btn-pill blue">Build kit</button>
+          <button class="btn-pill blue">Order kit</button>
         </div>
       </div>
       <div class="kit-card reveal" onclick="selectKitHome('sugar')">
@@ -669,7 +654,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);ba
           <h3>🌸 Sugar Cookie</h3>
           <div class="desc">Buttery & soft · 4 cookies · 3 icing · 4 toppings</div>
           <div class="price">$15<small>per kit</small></div>
-          <button class="btn-pill">Build kit</button>
+          <button class="btn-pill">Order kit</button>
         </div>
       </div>
     </div>
@@ -687,20 +672,20 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);ba
       <div class="step-card reveal">
         <div class="num">1</div>
         <span class="emo">🛒</span>
-        <h3>Choose your pack</h3>
-        <p>Pick from single, 4-pack or 8-pack — each comes loaded with cookies, icing & toppings.</p>
+        <h3>Choose your kit</h3>
+        <p>Pick your cookie flavour, add any extras, and tell us how you'd like it.</p>
       </div>
       <div class="step-card reveal">
         <div class="num">2</div>
-        <span class="emo">🎨</span>
-        <h3>Pick your flavours</h3>
-        <p>Mix and match your cookie, icing and topping combos. Make it sweet, salty, or chaotic.</p>
+        <span class="emo">📦</span>
+        <h3>Pick up or delivery</h3>
+        <p>Grab your kit at ASHS, or get it delivered around the North Shore.</p>
       </div>
       <div class="step-card reveal">
         <div class="num">3</div>
-        <span class="emo">📦</span>
-        <h3>Pick up at ASHS</h3>
-        <p>Pay by bank transfer or cash, grab your kit at school, decorate with your people.</p>
+        <span class="emo">🎨</span>
+        <h3>Decorate & enjoy</h3>
+        <p>Get decorating with your people — no oven, no mess, just fun.</p>
       </div>
     </div>
   </div>
@@ -709,7 +694,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);ba
 <!-- ========== CTA BANNER ========== -->
 <section class="cta-banner">
   <h2>Ready to <em>decorate?</em></h2>
-  <p>Build your kit below and we'll have it ready for you at school.</p>
+  <p>Order your kit below and we'll have it ready for you at school.</p>
 </section>
 
 <!-- ========== ORDER FORM ========== -->
@@ -850,7 +835,7 @@ function renderForm(){
     </div>
 
     <div class="card">
-      <div class="step-head"><span class="step-num">2</span><h3>Build your kit</h3></div>
+      <div class="step-head"><span class="step-num">2</span><h3>Order &amp; customise your kit</h3></div>
       <div class="hint">Every kit is a 4-pack with premade icings & toppings — add extras below if you want.</div>
       <div class="opts">
         ${Object.entries(KITS).map(([id,v])=>`
@@ -905,13 +890,7 @@ function renderForm(){
     </div>
 
     <div class="card">
-      <div class="step-head"><span class="step-num">3</span><h3>Dietary restrictions or special requests</h3></div>
-      <div class="hint">Allergies, dietary needs (vegan, gluten-free, nut-free), or anything else we should know? (optional)</div>
-      <textarea placeholder="e.g. nut allergy, gluten-free icing, please write 'happy birthday' on top..." oninput="O.specialRequests=this.value">${esc(O.specialRequests)}</textarea>
-    </div>
-
-    <div class="card">
-      <div class="step-head"><span class="step-num">4</span><h3>Collection method</h3></div>
+      <div class="step-head"><span class="step-num">3</span><h3>Collection method</h3></div>
       <div class="opts">
         <label class="opt ${O.delivery==='pickup'?'sel':''}" onclick="pick('delivery','pickup')">
           <input type="radio" name="delivery" ${O.delivery==='pickup'?'checked':''}>
@@ -950,7 +929,7 @@ function renderForm(){
     </div>
 
     <div class="card">
-      <div class="step-head"><span class="step-num">5</span><h3>Payment method</h3></div>
+      <div class="step-head"><span class="step-num">4</span><h3>Payment method</h3></div>
       <div class="hint">${O.delivery==='deliver'?'For delivery orders, bank transfer only.':'Pay by bank transfer or cash at school.'}</div>
       <div class="opts">
         <label class="opt ${O.paymentMethod==='bank'?'sel':''}" onclick="pick('paymentMethod','bank')">
@@ -1317,7 +1296,7 @@ footBrand.addEventListener('click', () => {
 const KITCHEN_LAT = -36.7805;
 const KITCHEN_LON = 174.7180;
 const KITCHEN_ADDRESS = "17 Newbury Place, Glenfield";
-const DELIVERY_RATE_PER_KM = 2; // $ per km - change here if you want different pricing
+const DELIVERY_RATE_PER_KM = 3; // $ per km - change here if you want different pricing
 
 let _mapInstance = null;
 let _mapMarker = null;
