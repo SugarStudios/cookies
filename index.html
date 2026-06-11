@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sugar Studio — Cookie Decorating Kits</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,800;9..144,900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF8F0;
+  --cream2:#FBEDD9;
+  --cocoa:#2A1810;
+  --cocoa2:#6B4A38;
+  --pink:#F4A8B8;
+  --pink-soft:#FFD9E2;
+  --pink-deep:#E88AA0;
+  --pink-bg:#FDECF1;
+  --blue:#A8C5DA;
+  --blue-soft:#D4E4F0;
+  --blue-deep:#7FAFC9;
+  --blue-bg:#E8F2F8;
+  --line:#E7CFB6;
+  --shadow:0 16px 40px -18px rgba(42,24,16,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;color:var(--cocoa);
+  background:var(--cream);min-height:100vh;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+
+/* ===== INFO STRIP (top) ===== */
+.tip-strip{
+  background:var(--pink);color:var(--cocoa);padding:11px 0;
+  font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  overflow:hidden;white-space:nowrap;
+}
+.tip-track{
+  display:inline-block;animation:scroll-x 25s linear infinite;padding-left:100%;
+}
+.tip-track span{margin:0 30px;}
+@keyframes scroll-x{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+/* ===== NAV ===== */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,248,240,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{max-width:1200px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-family:'Fraunces',serif;font-weight:900;font-size:1.45rem;letter-spacing:-.5px;}
+.nav-links{display:flex;align-items:center;gap:28px;}
+.nav-links a{color:var(--cocoa);text-decoration:none;font-weight:600;font-size:.88rem;transition:.15s;}
+.nav-links a:hover{color:var(--pink-deep);}
+.nav-cta{background:var(--pink);padding:10px 22px;border-radius:999px;font-weight:700!important;}
+.nav-cta:hover{background:var(--pink-deep);color:var(--cocoa)!important;}
+@media(max-width:600px){.nav-links a:not(.nav-cta){display:none;}}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,var(--cream) 0%,var(--pink-bg) 100%);
+  padding:50px 20px 30px;text-align:center;
+}
+.hero-eyebrow{
+  display:inline-block;background:#fff;border:2px solid var(--line);
+  padding:8px 16px;border-radius:999px;font-size:.74rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:1.5px;color:var(--cocoa2);margin-bottom:22px;
+}
+.hero-eyebrow .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4CAF7A;margin-right:7px;vertical-align:middle;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.mega-title{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(3.5rem,17vw,12rem);
+  line-height:.85;letter-spacing:-5px;
+  margin:10px 0 24px;
+  color:var(--cocoa);
+}
+.mega-title em{font-style:italic;color:var(--pink-deep);}
+.hero-sub{
+  font-family:'Fraunces',serif;
+  font-size:clamp(1.1rem,2.3vw,1.5rem);
+  color:var(--cocoa2);max-width:560px;margin:60px auto 28px;line-height:1.45;font-weight:400;
+}
+.hero-cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:50px;}
+.btn-pill{
+  display:inline-block;padding:15px 32px;background:var(--pink);color:var(--cocoa);
+  border:0;border-radius:999px;font-family:inherit;font-size:.95rem;font-weight:800;
+  cursor:pointer;text-decoration:none;transition:.2s;
+}
+.btn-pill:hover{background:var(--pink-deep);transform:translateY(-2px);}
+.btn-pill.blue{background:var(--blue);}
+.btn-pill.blue:hover{background:var(--blue-deep);}
+.btn-pill.outline{background:transparent;border:2px solid var(--cocoa);}
+.btn-pill.outline:hover{background:var(--cocoa);color:#fff;}
+
+/* hero cookie row */
+.cookie-row{
+  display:flex;justify-content:center;align-items:flex-end;gap:20px;
+  font-size:80px;margin-top:10px;flex-wrap:wrap;
+}
+.cookie-row span{display:inline-block;animation:wobble 3s ease-in-out infinite;}
+.cookie-row span:nth-child(1){animation-delay:0s;font-size:60px;}
+.cookie-row span:nth-child(2){animation-delay:.3s;}
+.cookie-row span:nth-child(3){animation-delay:.6s;font-size:70px;}
+.cookie-row span:nth-child(4){animation-delay:.9s;}
+.cookie-row span:nth-child(5){animation-delay:1.2s;font-size:55px;}
+@keyframes wobble{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(8deg)}}
+
+/* ===== SPLIT BLOCK (photo + color) ===== */
+.split{
+  display:grid;grid-template-columns:1fr 1fr;
+  background:linear-gradient(180deg,var(--pink-bg) 0%,var(--cream) 100%);
+  padding:60px 40px;gap:50px;align-items:center;max-width:1200px;margin:0 auto;
+}
+@media(max-width:760px){.split{grid-template-columns:1fr;padding:40px 20px;gap:30px;}}
+.split-img{
+  background:
+    radial-gradient(circle at 30% 40%,rgba(244,168,184,.35) 0%,transparent 55%),
+    radial-gradient(circle at 70% 70%,rgba(168,197,218,.3) 0%,transparent 50%),
+    rgba(255,255,255,.5);
+  position:relative;min-height:360px;display:grid;place-items:center;
+  border-radius:28px;
+  backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.7);
+}
+.split-img::after{
+  content:"🍪";font-size:180px;
+  filter:drop-shadow(0 10px 30px rgba(42,24,16,.2));
+}
+.split-img-deco{position:absolute;font-size:50px;opacity:.55;}
+.split-img .d1{top:15%;left:15%;animation:float 6s ease-in-out infinite;}
+.split-img .d2{bottom:15%;right:15%;animation:float 5s ease-in-out infinite 1s;font-size:40px;}
+.split-img .d3{top:25%;right:20%;animation:float 7s ease-in-out infinite 2s;font-size:35px;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.split-text{background:transparent;padding:20px 10px;}
+.split-text h2{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(2rem,4vw,3rem);letter-spacing:-1px;line-height:1.05;margin-bottom:20px;
+}
+.split-text p{font-size:1.02rem;color:var(--cocoa2);line-height:1.6;margin-bottom:24px;max-width:420px;}
+
+/* ===== KITS / PRODUCTS GRID ===== */
+.section{padding:90px 20px;}
+.section-inner{max-width:1200px;margin:0 auto;}
+.section-head{text-align:center;margin-bottom:50px;}
+.eyebrow{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink-deep);margin-bottom:12px;}
+.h-title{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.2rem,4.5vw,3.5rem);letter-spacing:-1.5px;line-height:1.05;}
+.h-title em{font-style:italic;color:var(--pink-deep);}
+.h-sub{font-size:1rem;color:var(--cocoa2);max-width:540px;margin:14px auto 0;line-height:1.6;}
+
+.kits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+@media(max-width:860px){.kits-grid{grid-template-columns:1fr;}}
+.kit-card{
+  background:#fff;border-radius:20px;overflow:hidden;
+  transition:.25s;cursor:pointer;
+}
+.kit-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
+.kit-img{
+  aspect-ratio:1;display:grid;place-items:center;
+  position:relative;padding:30px;
+}
+.kit-card:nth-child(1) .kit-img{background:var(--pink-bg);}
+.kit-card:nth-child(2) .kit-img{background:var(--blue-bg);}
+.kit-card:nth-child(3) .kit-img{background:#F5E8FF;}
+.kit-img::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 30%,rgba(255,255,255,.6) 0px,transparent 30px),
+    radial-gradient(circle at 80% 70%,rgba(255,255,255,.5) 0px,transparent 40px);
+}
+.kit-cookies{
+  position:relative;z-index:1;
+  display:grid;justify-items:center;align-items:center;
+  gap:8px;line-height:1;
+  filter:drop-shadow(0 6px 14px rgba(42,24,16,.18));
+}
+.kit-cookies.single{font-size:110px;}
+.kit-cookies.four{
+  position:relative;width:170px;height:170px;font-size:58px;
+  filter:drop-shadow(0 6px 14px rgba(42,24,16,.18));
+}
+.kit-cookies.four span{
+  position:absolute;transform:translate(-50%,-50%);display:inline-block;
+}
+.kit-cookies.four span:nth-child(1){top:8%;  left:50%;}
+.kit-cookies.four span:nth-child(2){top:50%; left:8%;}
+.kit-cookies.four span:nth-child(3){top:50%; left:92%;}
+.kit-cookies.four span:nth-child(4){top:92%; left:50%;}
+.kit-cookies.eight{
+  position:relative;width:180px;height:180px;font-size:38px;
+  filter:drop-shadow(0 6px 14px rgba(42,24,16,.18));
+}
+.kit-cookies.eight span{
+  position:absolute;transform:translate(-50%,-50%);display:inline-block;
+}
+.kit-cookies.eight span:nth-child(1){top:6%;  left:50%;}
+.kit-cookies.eight span:nth-child(2){top:21%; left:80%;}
+.kit-cookies.eight span:nth-child(3){top:50%; left:94%;}
+.kit-cookies.eight span:nth-child(4){top:79%; left:80%;}
+.kit-cookies.eight span:nth-child(5){top:94%; left:50%;}
+.kit-cookies.eight span:nth-child(6){top:79%; left:20%;}
+.kit-cookies.eight span:nth-child(7){top:50%; left:6%;}
+.kit-cookies.eight span:nth-child(8){top:21%; left:20%;}
+.kit-info{padding:24px 22px 28px;text-align:center;}
+.kit-info h3{font-family:'Fraunces',serif;font-weight:700;font-size:1.35rem;margin-bottom:8px;}
+.kit-info .desc{font-size:.82rem;color:var(--cocoa2);margin-bottom:14px;line-height:1.5;}
+.kit-info .price{font-family:'Fraunces',serif;font-weight:900;font-size:1.5rem;margin-bottom:16px;}
+.kit-info .price small{font-size:.85rem;color:var(--cocoa2);font-weight:400;display:block;font-family:'DM Sans',sans-serif;margin-top:2px;}
+.kit-info .btn-pill{font-size:.85rem;padding:11px 24px;}
+
+/* ===== STORY ===== */
+.story-bg{background:var(--blue-bg);}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+@media(max-width:760px){.story-grid{grid-template-columns:1fr;gap:30px;}}
+.story-img{
+  aspect-ratio:1;border-radius:24px;
+  background:
+    radial-gradient(circle at 30% 30%,var(--pink-soft) 0%,transparent 50%),
+    radial-gradient(circle at 70% 70%,var(--blue-soft) 0%,transparent 50%),
+    linear-gradient(135deg,#FFE8E0,#E0EFFA);
+  position:relative;display:grid;place-items:center;
+  overflow:hidden;
+}
+.story-img::after{
+  content:"🧁";font-size:160px;filter:drop-shadow(0 10px 30px rgba(42,24,16,.15));
+}
+.story-img .emo{position:absolute;font-size:40px;opacity:.5;}
+.story-img .e1{top:12%;left:12%;animation:float 5s infinite;}
+.story-img .e2{bottom:15%;right:15%;animation:float 7s infinite 1s;font-size:50px;}
+.story-img .e3{top:60%;left:10%;animation:float 6s infinite 2s;font-size:32px;}
+.story-text h2{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2rem,4vw,3rem);letter-spacing:-1px;line-height:1.05;margin-bottom:20px;}
+.story-text h2 em{font-style:italic;color:var(--pink-deep);}
+.story-text p{font-size:1.02rem;line-height:1.7;color:var(--cocoa2);margin-bottom:14px;}
+.story-text em{color:var(--pink-deep);font-style:italic;font-weight:600;}
+
+/* ===== HOW IT WORKS ===== */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+@media(max-width:760px){.steps-grid{grid-template-columns:1fr;}}
+.step-card{
+  background:#fff;border:2px solid var(--line);border-radius:24px;
+  padding:32px 26px;text-align:center;transition:.2s;
+}
+.step-card:hover{transform:translateY(-4px);border-color:var(--pink);box-shadow:var(--shadow);}
+.step-card .num{
+  display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  background:var(--pink);color:var(--cocoa);font-family:'Fraunces',serif;
+  font-weight:900;font-size:1.1rem;margin-bottom:18px;
+}
+.step-card:nth-child(2) .num{background:var(--blue);}
+.step-card:nth-child(3) .num{background:#E0C8F0;}
+.step-card .emo{font-size:48px;display:block;margin-bottom:14px;}
+.step-card h3{font-family:'Fraunces',serif;font-weight:700;font-size:1.3rem;margin-bottom:10px;}
+.step-card p{font-size:.92rem;color:var(--cocoa2);line-height:1.6;}
+
+/* ===== FLAVOURS ===== */
+.flav-bg{background:var(--pink-bg);}
+.flav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px;}
+@media(max-width:760px){.flav-grid{grid-template-columns:repeat(2,1fr);}}
+.flav-card{background:#fff;border-radius:18px;padding:24px 18px;text-align:center;cursor:pointer;transition:.2s;border:2px solid transparent;}
+.flav-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--pink);}
+.flav-emoji{font-size:42px;display:block;margin-bottom:10px;}
+.flav-name{font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem;}
+.flav-tag{font-size:.78rem;color:var(--cocoa2);margin-top:4px;}
+
+/* ===== CTA BANNER ===== */
+.cta-banner{
+  background:var(--cocoa);color:var(--cream);text-align:center;
+  padding:90px 20px;position:relative;overflow:hidden;
+}
+.cta-banner::before,.cta-banner::after{
+  content:"🍪";position:absolute;font-size:200px;opacity:.06;
+}
+.cta-banner::before{left:-40px;top:-30px;transform:rotate(-15deg);}
+.cta-banner::after{right:-40px;bottom:-40px;transform:rotate(20deg);}
+.cta-banner h2{font-family:'Fraunces',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;margin-bottom:14px;letter-spacing:-1px;line-height:1.05;}
+.cta-banner h2 em{font-style:italic;color:var(--pink);}
+.cta-banner p{font-size:1.05rem;opacity:.8;margin-bottom:28px;max-width:520px;margin-left:auto;margin-right:auto;}
+
+/* ===== ORDER SECTION ===== */
+.order-section{padding:80px 20px 100px;background:linear-gradient(180deg,var(--cream) 0%,var(--pink-bg) 100%);}
+.order-inner{max-width:720px;margin:0 auto;}
+.order-heading{text-align:center;margin-bottom:36px;}
+
+.card{background:#fff;border:2px solid var(--line);border-radius:20px;padding:22px;margin-bottom:16px;box-shadow:var(--shadow);}
+.step-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--pink);color:var(--cocoa);display:grid;place-items:center;font-weight:800;font-size:.82rem;flex:0 0 auto;}
+.step-head h3{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;}
+.req{color:var(--pink-deep);}
+.hint{font-size:.8rem;color:var(--cocoa2);margin:-4px 0 12px;}
+
+label.lbl{display:block;font-weight:700;font-size:.83rem;margin-bottom:5px;}
+input[type=text],input[type=email],input[type=number],select,textarea{
+  width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:12px;
+  font-family:inherit;font-size:.92rem;background:#FFFDFB;color:var(--cocoa);
+  margin-bottom:13px;transition:.15s;appearance:none;
+}
+textarea{min-height:90px;resize:vertical;line-height:1.5;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);background:#fff;}
+
+.opts{display:grid;gap:9px;margin-bottom:13px;}
+.opt{display:flex;align-items:center;gap:12px;padding:13px 14px;border:2px solid var(--line);border-radius:14px;cursor:pointer;background:#FFFDFB;transition:.15s;}
+.opt:hover{border-color:var(--pink);}
+.opt.sel{border-color:var(--pink);background:var(--pink-bg);}
+.opt input[type=radio]{accent-color:var(--pink-deep);width:17px;height:17px;flex:0 0 auto;}
+.opt .ot{font-weight:700;font-size:.92rem;}
+.opt .od{font-size:.76rem;color:var(--cocoa2);margin-top:2px;}
+.opt .op{margin-left:auto;font-weight:900;color:var(--pink-deep);font-family:'Fraunces',serif;white-space:nowrap;}
+
+.totalbar{
+  position:sticky;bottom:14px;z-index:20;margin-top:8px;
+  background:var(--cocoa);color:#fff;border-radius:18px;padding:15px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 20px 40px -14px rgba(42,24,16,.7);
+}
+.totalbar .tl{font-size:.72rem;opacity:.75;text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+.totalbar .ta{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:900;line-height:1;}
+.totalbar .btn{background:var(--pink);color:var(--cocoa);}
+.totalbar .btn:hover{background:var(--pink-deep);}
+
+.btn{border:0;cursor:pointer;font-family:inherit;font-weight:800;font-size:.9rem;padding:12px 22px;border-radius:999px;background:var(--pink);color:var(--cocoa);transition:.15s;display:inline-block;}
+.btn:hover{background:var(--pink-deep);}
+.btn:disabled{background:#C9B6A6;cursor:not-allowed;color:#fff;}
+.btn.ghost{background:#fff;color:var(--cocoa);border:2px solid var(--line);}
+.btn.ghost:hover{border-color:var(--cocoa2);}
+
+.err{color:var(--pink-deep);font-size:.82rem;font-weight:700;margin:-6px 0 11px;}
+
+.confirm{text-align:center;padding:36px 20px;}
+.confirm .big{font-size:60px;margin-bottom:8px;}
+.confirm h2{font-family:'Fraunces',serif;font-size:2rem;margin-bottom:6px;font-weight:900;}
+.paybox{text-align:left;background:var(--blue-bg);border:2px dashed var(--blue);border-radius:16px;padding:18px 20px;margin:18px 0;}
+.paybox.pink{background:var(--pink-bg);border-color:var(--pink);}
+.paybox h4{font-family:'Fraunces',serif;font-size:1.05rem;margin-bottom:10px;}
+.prow{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:.88rem;}
+.prow:last-child{border:0;font-weight:800;}
+.prow span:first-child{color:var(--cocoa2);font-weight:600;flex:0 0 auto;}
+.prow span:last-child{text-align:right;}
+
+.review-head{text-align:center;margin-bottom:20px;}
+.review-head .big{font-size:38px;margin-bottom:4px;}
+.review-head h2{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:900;}
+.review-head p{color:var(--cocoa2);font-size:.88rem;margin-top:4px;}
+.review-actions{display:flex;gap:10px;margin-top:18px;}
+.review-actions .btn{flex:1;text-align:center;}
+
+/* ===== COOKIE PONG EASTER EGG ===== */
+#pong-modal{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(42,24,16,.88);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.pong-box{
+  background:#1A0E08;border-radius:22px;overflow:hidden;
+  border:2px solid rgba(244,168,184,.25);
+  box-shadow:0 30px 80px rgba(0,0,0,.7);
+  max-width:620px;width:100%;
+  animation:heroPop .4s cubic-bezier(.22,1,.36,1) both;
+}
+.pong-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07);
+  font-family:'Fraunces',serif;color:#fff;font-weight:700;font-size:1.05rem;
+}
+.pong-close{
+  background:rgba(255,255,255,.1);border:0;color:#fff;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;
+  transition:.15s;line-height:1;
+}
+.pong-close:hover{background:var(--pink);color:var(--cocoa);}
+#pong-canvas{display:block;width:100%;cursor:crosshair;}
+.pong-hint{
+  text-align:center;padding:10px;
+  color:rgba(255,255,255,.35);font-size:.76rem;
+}
+.foot-brand{cursor:pointer;transition:.2s;position:relative;display:inline-block;}
+.foot-brand:hover{color:var(--pink)!important;}
+.click-me-bubble{
+  position:absolute;top:-52px;left:50%;transform:translateX(-50%) scale(0);
+  background:var(--pink);color:var(--cocoa);
+  font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:800;
+  padding:8px 14px;border-radius:999px;white-space:nowrap;
+  pointer-events:none;transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 6px 18px rgba(42,24,16,.3);
+}
+.click-me-bubble::after{
+  content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:var(--pink);border-bottom:0;
+}
+.click-me-bubble.show{transform:translateX(-50%) scale(1);}
+@keyframes wiggle{0%,100%{transform:translateX(-50%) scale(1) rotate(0)}25%{transform:translateX(-50%) scale(1) rotate(-4deg)}75%{transform:translateX(-50%) scale(1) rotate(4deg)}}
+.foot{background:var(--cocoa);color:var(--cream);padding:60px 20px 30px;text-align:center;}
+.foot-brand{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.5rem,8vw,5rem);letter-spacing:-2px;line-height:.95;margin-bottom:10px;}
+.foot p{opacity:.7;font-size:.92rem;}
+.foot .socials{margin:20px 0;display:flex;justify-content:center;gap:18px;font-size:1.5rem;}
+.foot .copy{font-size:.74rem;opacity:.5;margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);}
+
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes spin-simple{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.kit-card:hover .kit-cookies.single span{animation:spin-simple .7s ease-in-out;}
+.kit-card:hover .kit-cookies.four span{animation:spin .7s ease-in-out;}
+.kit-card:hover .kit-cookies.eight span{animation:spin .7s ease-in-out;}
+
+/* fade + slide up on scroll */
+@keyframes fadein{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+@keyframes fadeup{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+.card{animation:fadein .3s ease both;}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* stagger children */
+.reveal:nth-child(1){transition-delay:.05s;}
+.reveal:nth-child(2){transition-delay:.15s;}
+.reveal:nth-child(3){transition-delay:.25s;}
+
+/* hero title letter pop */
+@keyframes heroPop{0%{opacity:0;transform:scale(.85) translateY(20px);}100%{opacity:1;transform:scale(1) translateY(0);}}
+.mega-title{animation:heroPop .7s cubic-bezier(.22,1,.36,1) both;}
+.hero-eyebrow{animation:heroPop .5s cubic-bezier(.22,1,.36,1) .1s both;}
+.hero-sub{animation:heroPop .5s cubic-bezier(.22,1,.36,1) .25s both;}
+.hero-cta-row{animation:heroPop .5s cubic-bezier(.22,1,.36,1) .35s both;}
+
+/* button bounce on hover */
+.btn-pill{transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .15s;}
+.btn-pill:hover{transform:scale(1.07);}
+.btn:hover{transform:scale(1.05);}
+
+/* nav link underline slide */
+.nav-links a:not(.nav-cta){position:relative;}
+.nav-links a:not(.nav-cta)::after{
+  content:'';position:absolute;bottom:-3px;left:0;width:0;height:2px;
+  background:var(--pink-deep);transition:width .25s ease;border-radius:2px;
+}
+.nav-links a:not(.nav-cta):hover::after{width:100%;}
+
+/* flavour card emoji bounce on hover */
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px)}70%{transform:translateY(-5px)}}
+.flav-card:hover .flav-emoji{animation:bounce .5s ease;}
+
+/* step card number pulse on hover */
+@keyframes numPop{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.step-card:hover .num{animation:numPop .4s ease;}
+
+/* section eyebrow slide in */
+@keyframes slideRight{from{opacity:0;transform:translateX(-16px);}to{opacity:1;transform:none;}}
+.eyebrow{animation:slideRight .5s ease both;}
+
+/* kit card image zoom on hover */
+.kit-img{transition:transform .3s ease;}
+.kit-card:hover .kit-img{transform:scale(1.03);}
+
+/* info strip items fade in */
+.info-strip span{display:flex;align-items:center;gap:8px;animation:heroPop .5s ease both;}
+.info-strip span:nth-child(1){animation-delay:.1s;}
+.info-strip span:nth-child(2){animation-delay:.2s;}
+.info-strip span:nth-child(3){animation-delay:.3s;}
+.info-strip span:nth-child(4){animation-delay:.4s;}
+
+/* cta banner text shimmer */
+@keyframes shimmer{0%,100%{opacity:1}50%{opacity:.75}}
+.cta-banner h2 em{animation:shimmer 3s ease-in-out infinite;}
+
+/* address map */
+.map-wrap{margin:0 0 13px;border-radius:14px;overflow:hidden;border:2px solid var(--line);}
+#leaflet-map{height:240px;width:100%;background:#E8F2F8;}
+.addr-suggestions{margin-bottom:13px;}
+.addr-suggestion{
+  padding:10px 14px;border:2px solid var(--line);background:#fff;
+  cursor:pointer;font-size:.86rem;border-radius:10px;margin-bottom:6px;
+  transition:.15s;line-height:1.4;
+}
+.addr-suggestion:hover{background:var(--pink-bg);border-color:var(--pink);}
+.addr-suggestion .pin{margin-right:6px;}
+.addr-loading{font-size:.78rem;color:var(--cocoa2);padding:6px 4px;margin-bottom:13px;}
+
+/* scroll-triggered counter for total */
+.totalbar{animation:fadein .4s ease both;}
+
+/* inline stepper - buttons on right of field */
+.stepper-wrap{position:relative;margin-bottom:13px;}
+.stepper-wrap input[type=number]{
+  padding-right:80px;-moz-appearance:textfield;
+}
+.stepper-wrap input[type=number]::-webkit-inner-spin-button,
+.stepper-wrap input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.stepper-btns{
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  display:flex;gap:4px;
+}
+.stepper-btns button{
+  width:32px;height:32px;border:2px solid var(--line);background:#fff;
+  color:var(--cocoa);font-size:1.1rem;font-weight:700;cursor:pointer;
+  border-radius:8px;display:grid;place-items:center;transition:.15s;
+  font-family:inherit;line-height:1;
+}
+.stepper-btns button:hover{background:var(--pink);border-color:var(--pink);}
+
+/* ============================================================
+   RESPONSIVE / ADAPTIVE SPACING
+   ============================================================ */
+
+/* ── Tablet (≤ 900px) ── */
+@media(max-width:900px){
+  .section{padding:60px 16px;}
+  .kits-grid{grid-template-columns:repeat(2,1fr);}
+  .hero{padding:50px 16px 28px;}
+  .cta-banner{padding:60px 16px;}
+  .order-section{padding:50px 16px 80px;}
+  .nav-inner{padding:12px 16px;}
+}
+
+/* ── Mobile (≤ 600px) ── */
+@media(max-width:600px){
+  /* nav */
+  .nav-inner{padding:10px 14px;}
+  .nav-brand{font-size:1.15rem;}
+  .nav-cta{padding:8px 14px;font-size:.78rem;}
+
+  /* hero */
+  .hero{padding:36px 14px 24px;}
+  .hero-sub{margin:20px auto 22px;font-size:1rem;}
+  .hero-cta-row{margin-bottom:0;}
+  .btn-pill{padding:13px 24px;font-size:.88rem;}
+
+  /* split */
+  .split{padding:30px 14px;gap:20px;}
+  .split-img{min-height:240px;}
+  .split-img::after{font-size:120px;}
+  .split-text h2{font-size:1.6rem;}
+  .split-text p{font-size:.92rem;}
+
+  /* sections */
+  .section{padding:44px 14px;}
+  .section-head{margin-bottom:28px;}
+  .h-title{font-size:1.8rem;letter-spacing:-.8px;}
+  .h-sub{font-size:.88rem;}
+  .eyebrow{font-size:.68rem;}
+
+  /* kits */
+  .kits-grid{grid-template-columns:1fr;gap:14px;}
+  .kit-info{padding:18px 16px 22px;}
+  .kit-info h3{font-size:1.2rem;}
+  .kit-info .price{font-size:1.3rem;}
+  .kit-cookies.single{font-size:90px;}
+  .kit-cookies.four{width:140px;height:140px;font-size:48px;}
+  .kit-cookies.eight{width:150px;height:150px;font-size:30px;}
+
+  /* flavours */
+  .flav-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .flav-card{padding:18px 12px;}
+  .flav-emoji{font-size:34px;}
+  .flav-name{font-size:.95rem;}
+
+  /* steps */
+  .steps-grid{grid-template-columns:1fr;gap:12px;}
+  .step-card{padding:22px 18px;}
+
+  /* cta banner */
+  .cta-banner{padding:50px 14px;}
+
+  /* order form */
+  .order-section{padding:40px 12px 80px;}
+  .order-heading{margin-bottom:20px;}
+  .card{padding:16px 14px;}
+  .totalbar{padding:12px 14px;border-radius:14px;}
+  .totalbar .ta{font-size:1.4rem;}
+  .btn{padding:11px 18px;font-size:.85rem;}
+  .review-actions{flex-direction:column;}
+  .review-actions .btn{width:100%;text-align:center;}
+
+  /* info strip */
+  .info-strip{gap:16px;font-size:.78rem;padding:14px 12px;}
+
+  /* footer */
+  .foot{padding:40px 14px 24px;}
+  .foot p{font-size:.85rem;}
+
+  /* pong */
+  .pong-header{font-size:.88rem;padding:12px 14px;}
+}
+
+/* ── Small mobile (≤ 380px) ── */
+@media(max-width:380px){
+  .mega-title{letter-spacing:-3px;}
+  .nav-brand{font-size:1rem;}
+  .kits-grid{grid-template-columns:1fr;}
+  .flav-grid{grid-template-columns:1fr;}
+  .section{padding:36px 12px;}
+  .card{padding:14px 12px;}
+  .opt{padding:10px 10px;gap:8px;}
+  .totalbar{flex-direction:column;gap:10px;text-align:center;}
+  .totalbar .btn{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Sugar Studio</div>
+    <div class="nav-links">
+      <a href="#kits">Our Kits</a>
+      <a href="#how">How it works</a>
+      <a href="#order" class="nav-cta">Order now</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-eyebrow"><span class="dot"></span>Now taking orders · ASHS</div>
+  <h1 class="mega-title">Sugar <em>Studio</em></h1>
+  <p class="hero-sub">Pre-baked cookies, dreamy icing, and your favourite toppings — all in one box. No oven, no stress, just decorating fun.</p>
+  <div class="hero-cta-row">
+    <a href="#order" class="btn-pill">Build your kit →</a>
+  </div>
+</section>
+
+<!-- ========== SPLIT BLOCK 1 ========== -->
+<div style="background:linear-gradient(180deg,var(--pink-bg) 0%,var(--cream) 100%);padding:0 20px;">
+<section class="split">
+  <div class="split-img">
+    <span class="split-img-deco d1">✨</span>
+    <span class="split-img-deco d2">🎨</span>
+    <span class="split-img-deco d3">🧁</span>
+  </div>
+  <div class="split-text">
+    <h2>Pick up your kit straight at school.</h2>
+    <p>Order online, pay by bank transfer or cash, and grab your decorating kit at ASHS.</p>
+  </div>
+</section>
+</div>
+
+<!-- ========== OUR KITS ========== -->
+<section class="section" id="kits">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="eyebrow">Our Kits</div>
+      <h2 class="h-title">Cookies that <em>actually</em> taste good.</h2>
+      <p class="h-sub">Every kit is a 4-pack with 3 icings, 4 toppings, and your pick of cookie flavour. Three flavours, five icings, eleven toppings — endless combos.</p>
+    </div>
+    <div class="kits-grid">
+      <div class="kit-card reveal" onclick="selectKitHome('choc')">
+        <div class="kit-img"><div class="kit-cookies four"><span>🍪</span><span>🍪</span><span>🍪</span><span>🍪</span></div></div>
+        <div class="kit-info">
+          <h3>🍫 Chocolate Chip</h3>
+          <div class="desc">A classic · 4 cookies · 3 icing · 4 toppings</div>
+          <div class="price">$15<small>per kit</small></div>
+          <button class="btn-pill">Build kit</button>
+        </div>
+      </div>
+      <div class="kit-card reveal" onclick="selectKitHome('velvet')">
+        <div class="kit-img"><div class="kit-cookies four"><span>🍪</span><span>🍪</span><span>🍪</span><span>🍪</span></div></div>
+        <div class="kit-info">
+          <h3>❤️ Red Velvet</h3>
+          <div class="desc">For the romantics · 4 cookies · 3 icing · 4 toppings</div>
+          <div class="price">$20<small>per kit</small></div>
+          <button class="btn-pill blue">Build kit</button>
+        </div>
+      </div>
+      <div class="kit-card reveal" onclick="selectKitHome('sugar')">
+        <div class="kit-img"><div class="kit-cookies four"><span>🍪</span><span>🍪</span><span>🍪</span><span>🍪</span></div></div>
+        <div class="kit-info">
+          <h3>🌸 Sugar Cookie</h3>
+          <div class="desc">Buttery & soft · 4 cookies · 3 icing · 4 toppings</div>
+          <div class="price">$15<small>per kit</small></div>
+          <button class="btn-pill">Build kit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HOW IT WORKS ========== -->
+<section class="section" id="how">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="eyebrow">How it works</div>
+      <h2 class="h-title">From order to <em>cookies in hand.</em></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="num">1</div>
+        <span class="emo">🛒</span>
+        <h3>Choose your pack</h3>
+        <p>Pick from single, 4-pack or 8-pack — each comes loaded with cookies, icing & toppings.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="num">2</div>
+        <span class="emo">🎨</span>
+        <h3>Pick your flavours</h3>
+        <p>Mix and match your cookie, icing and topping combos. Make it sweet, salty, or chaotic.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="num">3</div>
+        <span class="emo">📦</span>
+        <h3>Pick up at ASHS</h3>
+        <p>Pay by bank transfer or cash, grab your kit at school, decorate with your people.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA BANNER ========== -->
+<section class="cta-banner">
+  <h2>Ready to <em>decorate?</em></h2>
+  <p>Build your kit below and we'll have it ready for you at school.</p>
+</section>
+
+<!-- ========== ORDER FORM ========== -->
+<section class="order-section" id="order">
+  <div class="order-inner">
+    <div class="order-heading">
+      <div class="eyebrow">Order</div>
+      <h2 class="h-title">Build your <em>kit</em></h2>
+      <p class="h-sub">Fill in everything below — we'll send you a confirmation.</p>
+    </div>
+    <div id="view"></div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="foot">
+  <div class="foot-brand" id="foot-brand" onclick="openCookiePong()" title="🍪">
+    <span class="click-me-bubble" id="click-bubble">🍪 click me!</span>
+    Sugar Studio
+  </div>
+  <p>Cookie decorating kits · Auckland · ASHS</p>
+  <div class="socials">
+    <span>📷</span><span>🎵</span><span>📧</span>
+  </div>
+  <div class="copy">© 2026 Sugar Studio. Made with 🍪 by Year 13.</div>
+</footer>
+
+<!-- ===== COOKIE PONG EASTER EGG ===== -->
+<div id="pong-modal">
+  <div class="pong-box">
+    <div class="pong-header">
+      <span>🍪 Cookie Pong — secret unlocked!</span>
+      <button class="pong-close" onclick="closeCookiePong()">✕</button>
+    </div>
+    <canvas id="pong-canvas" width="580" height="370"></canvas>
+    <p class="pong-hint">Move your mouse / finger to control the pink paddle · First to 5 wins</p>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZbTJ8dQAoWmmfmoAb2DnevE5-unGK1uftG4-q81vAnLP6Yzh_Ze9OedpMV8sP5IN2lQ/exec";
+
+const NORTH_SHORE_SUBURBS = [
+  "Albany","Bayview","Bayswater","Beach Haven","Belmont","Birkdale","Birkenhead",
+  "Browns Bay","Campbells Bay","Castor Bay","Chatswood","Cheltenham","Crown Hill",
+  "Devonport","Forrest Hill","Glenfield","Hauraki","Highbury","Hillcrest",
+  "Long Bay","Mairangi Bay","Milford","Murrays Bay","Narrow Neck","Northcote",
+  "Northcross","Pinehill","Rosedale","Rothesay Bay","Stanley Point","Sunnynook",
+  "Takapuna","Torbay","Unsworth Heights","Wairau Valley","Westlake","Windsor Park"
+];
+
+const KITS = {
+  choc:   { id:"choc",   name:"Chocolate Chip Cookies", cookieName:"Chocolate Chip", price:15, cookies:4, emoji:"🍫",
+            icings:["Vanilla Buttercream","Milk Chocolate Ganache"],
+            toppings:["KitKat","Mini M&Ms","Pretzels"] },
+  velvet: { id:"velvet", name:"Red Velvet Cookies",     cookieName:"Red Velvet",     price:20, cookies:4, emoji:"❤️",
+            icings:["Vanilla Buttercream","Milk Chocolate Ganache"],
+            toppings:["Oreo","Shredded Coconut","Powdered Sugar"] },
+  sugar:  { id:"sugar",  name:"Sugar Cookies",          cookieName:"Sugar Cookie",   price:15, cookies:4, emoji:"🌸",
+            icings:["Vanilla Buttercream","Pink Lemon Buttercream"],
+            toppings:["Sprinkles","Mini M&Ms","Oreo"] },
+};
+const EXTRA_COOKIE_PRICE = 3;
+const EXTRA_ICING_PRICE = 2;
+const EXTRA_TOPPING_PRICE = 1;
+const ICINGS  = ["Vanilla Buttercream","Lemon Buttercream","Milk Chocolate Ganache","Dark Chocolate Ganache","White Chocolate Ganache"];
+const TOPPINGS= ["Oreo","KitKat","Bueno","Pretzels","Mini M&Ms","Shredded Coconut","Chocolate Chip","Chocolate Button","White Chocolate Button","Dark Chocolate Button","Crushed Almonds"];
+
+let O = blank();
+let stage = "form";
+
+function blank(){
+  return {name:"",email:"",kit:"",
+          extraCookies:0,
+          extraIcingCount:0, extraIcingSelections:[],
+          extraToppingCount:0, extraToppingSelections:[],
+          showAddons:false,
+          specialRequests:"",
+          delivery:"pickup",
+          paymentMethod:"bank",
+          address:"",suburb:"",deliveryNote:"",addressLat:null,addressLon:null,
+          deliveryDistance:null,deliveryFee:null};
+}
+
+function total(){
+  const k=KITS[O.kit]; if(!k) return 0;
+  let t=k.price;
+  t+=(O.extraCookies||0)*EXTRA_COOKIE_PRICE;
+  t+=(O.extraIcingCount||0)*EXTRA_ICING_PRICE;
+  t+=(O.extraToppingCount||0)*EXTRA_TOPPING_PRICE;
+  if(O.delivery==='deliver' && O.deliveryFee) t+=O.deliveryFee;
+  return t;
+}
+
+const $=s=>document.querySelector(s);
+function esc(s){return(s||"").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function syncText(){
+  if($("#f-name"))  O.name=$("#f-name").value;
+  if($("#f-email")) O.email=$("#f-email").value;
+}
+function scrollToOrder(){document.getElementById("order").scrollIntoView({behavior:"smooth"});}
+
+function selectPack(packKey){
+  // Legacy — kept for compatibility
+  scrollToOrder();
+}
+
+function selectCookie(cookieId){
+  selectKitHome(cookieId);
+}
+
+function selectKitHome(kitId){
+  if(KITS[kitId]) O.kit = kitId;
+  stage = "form";
+  render();
+  scrollToOrder();
+}
+
+function render(){
+  if(stage==="done") return renderConfirm();
+  if(stage==="review") return renderReview();
+  renderForm();
+  // Init map if delivery is selected and map element exists
+  if(O.delivery==='deliver'){
+    setTimeout(()=>{ if(document.getElementById('leaflet-map')) initMap(); }, 60);
+  }
+}
+
+function renderForm(){
+  const k=KITS[O.kit];
+  $("#view").innerHTML=`
+    <div class="card">
+      <div class="step-head"><span class="step-num">1</span><h3>Your details</h3></div>
+      <label class="lbl">Full name <span class="req">*</span></label>
+      <input type="text" id="f-name" value="${esc(O.name)}" placeholder="e.g. Mia Patel">
+      <label class="lbl">Email <span class="req">*</span></label>
+      <input type="email" id="f-email" value="${esc(O.email)}" placeholder="your@email.com">
+    </div>
+
+    <div class="card">
+      <div class="step-head"><span class="step-num">2</span><h3>Build your kit</h3></div>
+      <div class="hint">Every kit is a 4-pack with premade icings & toppings — add extras below if you want.</div>
+      <div class="opts">
+        ${Object.entries(KITS).map(([id,v])=>`
+          <label class="opt ${O.kit===id?'sel':''}" onclick="pick('kit','${id}')" style="align-items:flex-start;">
+            <input type="radio" name="kit" ${O.kit===id?'checked':''} style="margin-top:3px">
+            <div style="flex:1">
+              <div class="ot">${v.emoji} ${v.name}</div>
+              <div class="od" style="margin-top:6px"><b>Icings:</b> ${v.icings.join(', ')}</div>
+              <div class="od"><b>Toppings:</b> ${v.toppings.join(', ')}</div>
+            </div>
+            <div class="op">$${v.price}</div>
+          </label>`).join("")}
+      </div>
+
+      <div style="margin-top:18px;padding-top:18px;border-top:1px dashed var(--line)">
+        <button type="button" class="btn ghost" id="addons-toggle" onclick="toggleAddons()" style="width:100%${O.showAddons?';display:none':''}">
+          ➕ Want to add anything else?
+        </button>
+        <div id="addons-panel" style="display:${O.showAddons?'block':'none'}">
+          <div style="font-family:'Fraunces',serif;font-weight:700;font-size:1.05rem;margin-bottom:10px;">Add-ons</div>
+
+          <label class="lbl">Extra cookies (+$${EXTRA_COOKIE_PRICE} each · max 10)</label>
+          <div class="stepper-wrap">
+            <input type="number" id="in-extraCookies" min="0" max="10" value="${O.extraCookies||0}" oninput="setNum('extraCookies',this.value,0,10);updateTotal()" style="margin-bottom:0">
+            <div class="stepper-btns">
+              <button type="button" onclick="nudge('extraCookies',-1,0,10,'in-extraCookies');updateTotal()">−</button>
+              <button type="button" onclick="nudge('extraCookies',1,0,10,'in-extraCookies');updateTotal()">+</button>
+            </div>
+          </div>
+
+          <label class="lbl">Extra icings (+$${EXTRA_ICING_PRICE} each · max 5)</label>
+          <div class="stepper-wrap">
+            <input type="number" id="in-extraIcingCount" min="0" max="5" value="${O.extraIcingCount||0}" oninput="updateExtraIcing(this.value)" style="margin-bottom:0">
+            <div class="stepper-btns">
+              <button type="button" onclick="nudge('extraIcingCount',-1,0,5,'in-extraIcingCount');updateExtraIcing(O.extraIcingCount)">−</button>
+              <button type="button" onclick="nudge('extraIcingCount',1,0,5,'in-extraIcingCount');updateExtraIcing(O.extraIcingCount)">+</button>
+            </div>
+          </div>
+          <div id="extra-icing-list" style="display:${O.extraIcingCount>0?'block':'none'}"></div>
+
+          <label class="lbl">Extra toppings (+$${EXTRA_TOPPING_PRICE} each · max 10)</label>
+          <div class="stepper-wrap">
+            <input type="number" id="in-extraToppingCount" min="0" max="10" value="${O.extraToppingCount||0}" oninput="updateExtraTopping(this.value)" style="margin-bottom:0">
+            <div class="stepper-btns">
+              <button type="button" onclick="nudge('extraToppingCount',-1,0,10,'in-extraToppingCount');updateExtraTopping(O.extraToppingCount)">−</button>
+              <button type="button" onclick="nudge('extraToppingCount',1,0,10,'in-extraToppingCount');updateExtraTopping(O.extraToppingCount)">+</button>
+            </div>
+          </div>
+          <div id="extra-topping-note" style="display:${O.extraToppingCount>0?'block':'none'}"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="step-head"><span class="step-num">3</span><h3>Dietary restrictions or special requests</h3></div>
+      <div class="hint">Allergies, dietary needs (vegan, gluten-free, nut-free), or anything else we should know? (optional)</div>
+      <textarea placeholder="e.g. nut allergy, gluten-free icing, please write 'happy birthday' on top..." oninput="O.specialRequests=this.value">${esc(O.specialRequests)}</textarea>
+    </div>
+
+    <div class="card">
+      <div class="step-head"><span class="step-num">4</span><h3>Collection method</h3></div>
+      <div class="opts">
+        <label class="opt ${O.delivery==='pickup'?'sel':''}" onclick="pick('delivery','pickup')">
+          <input type="radio" name="delivery" ${O.delivery==='pickup'?'checked':''}>
+          <div>
+            <div class="ot">🏫 Pick up at ASHS</div>
+            <div class="od">Free — collect at school</div>
+          </div>
+        </label>
+        <label class="opt ${O.delivery==='deliver'?'sel':''}" onclick="pick('delivery','deliver')">
+          <input type="radio" name="delivery" ${O.delivery==='deliver'?'checked':''}>
+          <div>
+            <div class="ot">🚗 Delivery</div>
+            <div class="od">We'll come to you — fee based on location</div>
+          </div>
+        </label>
+      </div>
+      ${O.delivery==='deliver'?`
+        <div style="background:var(--blue-bg);border:1px solid var(--blue);border-radius:12px;padding:10px 14px;font-size:.82rem;color:var(--cocoa2);margin-bottom:14px;">
+          📍 Delivery is currently available in the <b>North Shore</b> region only.
+        </div>
+        <label class="lbl">Street address <span class="req">*</span></label>
+        <input type="text" id="f-address" autocomplete="off" value="${esc(O.address)}" placeholder="Start typing your address..." oninput="onAddressInput(this.value)">
+        <div id="addr-suggestions" class="addr-suggestions"></div>
+        <label class="lbl">Suburb <span class="req">*</span></label>
+        <select id="f-suburb" onchange="O.suburb=this.value;triggerAddressMap()">
+          <option value="">— select suburb —</option>
+          ${NORTH_SHORE_SUBURBS.map(s=>`<option ${O.suburb===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <div class="map-wrap">
+          <div id="leaflet-map"></div>
+        </div>
+        <div id="delivery-fee-display" style="display:${O.deliveryFee?'block':'none'};background:var(--pink-bg);border:2px solid var(--pink);border-radius:12px;padding:12px 16px;margin-bottom:13px;font-size:.9rem;"></div>
+        <label class="lbl">Delivery note (optional)</label>
+        <input type="text" id="f-dnote" value="${esc(O.deliveryNote)}" placeholder="e.g. ring doorbell, leave at door" oninput="O.deliveryNote=this.value">
+      `:''}
+    </div>
+
+    <div class="card">
+      <div class="step-head"><span class="step-num">5</span><h3>Payment method</h3></div>
+      <div class="hint">${O.delivery==='deliver'?'For delivery orders, bank transfer only.':'Pay by bank transfer or cash at school.'}</div>
+      <div class="opts">
+        <label class="opt ${O.paymentMethod==='bank'?'sel':''}" onclick="pick('paymentMethod','bank')">
+          <input type="radio" name="payment" ${O.paymentMethod==='bank'?'checked':''}>
+          <div>
+            <div class="ot">💳 Bank transfer</div>
+            <div class="od">Carly SO · 12-3136-0602821-01</div>
+          </div>
+        </label>
+        ${O.delivery==='pickup'?`
+        <label class="opt ${O.paymentMethod==='cash'?'sel':''}" onclick="pick('paymentMethod','cash')">
+          <input type="radio" name="payment" ${O.paymentMethod==='cash'?'checked':''}>
+          <div>
+            <div class="ot">💵 Cash at school</div>
+            <div class="od">Pay when you collect at ASHS</div>
+          </div>
+        </label>
+        `:''}
+      </div>
+    </div>
+
+    <div id="oErr"></div>
+
+    <div class="totalbar">
+      <div>
+        <div class="tl">Estimated total</div>
+        <div class="ta">$${total().toFixed(2)}</div>
+      </div>
+      <button class="btn" onclick="goReview()">Review order →</button>
+    </div>`;
+}
+
+function renderReview(){
+  const k=KITS[O.kit];
+  $("#view").innerHTML=`
+    <div class="card">
+      <div class="review-head">
+        <div class="big">📋</div>
+        <h2>Review your order</h2>
+        <p>Double check everything below before you place your order.</p>
+      </div>
+
+      <div class="paybox">
+        <h4>👤 Your details</h4>
+        <div class="prow"><span>Name</span><span>${esc(O.name)}</span></div>
+        <div class="prow"><span>Email</span><span>${esc(O.email)}</span></div>
+        <div class="prow"><span>Collection</span><span>${O.delivery==='deliver'?'🚗 Delivery':'🏫 Pick up at ASHS'}</span></div>
+        ${O.delivery==='deliver'?`
+        <div class="prow"><span>Address</span><span>${esc(O.address)}, ${esc(O.suburb)}, North Shore, Auckland</span></div>
+        ${O.deliveryNote?`<div class="prow"><span>Delivery note</span><span>${esc(O.deliveryNote)}</span></div>`:''}
+        `:''}
+      </div>
+
+      <div class="paybox pink">
+        <h4>🍪 Your kit</h4>
+        <div class="prow"><span>Kit</span><span>${k.emoji} ${k.name} — $${k.price}</span></div>
+        <div class="prow"><span>Icings</span><span>${k.icings.join(', ')}</span></div>
+        <div class="prow"><span>Toppings</span><span>${k.toppings.join(', ')}</span></div>
+        ${O.extraCookies?`<div class="prow"><span>Extra cookies</span><span>+${O.extraCookies} × $${EXTRA_COOKIE_PRICE} = $${O.extraCookies*EXTRA_COOKIE_PRICE}</span></div>`:''}
+        ${O.extraIcingCount?`<div class="prow"><span>Extra icings</span><span>${O.extraIcingSelections.filter(Boolean).join(', ')||'TBC'} +$${O.extraIcingCount*EXTRA_ICING_PRICE}</span></div>`:''}
+        ${O.extraToppingCount?`<div class="prow"><span>Extra toppings</span><span>${O.extraToppingSelections.filter(Boolean).join(', ')||'TBC'} +$${O.extraToppingCount*EXTRA_TOPPING_PRICE}</span></div>`:''}
+        ${O.delivery==='deliver' && O.deliveryFee?`<div class="prow"><span>Delivery</span><span>+$${O.deliveryFee.toFixed(2)}</span></div>`:''}
+        <div class="prow"><span>Payment</span><span>${O.paymentMethod==='cash'?'💵 Cash at school':'💳 Bank transfer'}</span></div>
+        <div class="prow"><span>Total</span><span>$${total().toFixed(2)}</span></div>
+      </div>
+
+      ${O.specialRequests?`<div class="paybox" style="background:var(--blue-bg);border-color:var(--blue);"><h4>⚠️ Dietary / special requests</h4><p style="font-size:.9rem;line-height:1.55;color:var(--cocoa2);white-space:pre-wrap;">${esc(O.specialRequests)}</p></div>`:''}
+
+      <div id="oErr"></div>
+
+      <div class="review-actions">
+        <button class="btn ghost" onclick="goBack()">← Edit</button>
+        <button class="btn" id="submitBtn" onclick="submitOrder()">Confirm & place order ✓</button>
+      </div>
+    </div>`;
+}
+
+function renderConfirm(){
+  $("#view").innerHTML=`
+    <div class="card confirm">
+      <div class="big">🎉</div>
+      <h2>Order placed!</h2>
+      <p style="color:var(--cocoa2);font-size:.92rem">Thanks ${esc(O.name.split(' ')[0]||'')}! Sugar Studio has your order. Pay below to confirm it.</p>
+      <div class="paybox">
+        <h4>💳 How to pay</h4>
+        ${O.paymentMethod==='cash'?`
+          <div class="prow"><span>Pay</span><span>💵 Cash</span></div>
+          <div class="prow"><span>Who to pay</span><span><b>Carly</b></span></div>
+          <div class="prow"><span>Where</span><span>Albany Senior High School</span></div>
+          <div class="prow"><span>Amount</span><span><b>$${total().toFixed(2)}</b></span></div>
+        `:`
+          <div class="prow"><span>Account name</span><span>Carly SO</span></div>
+          <div class="prow"><span>Bank transfer</span><span>12-3136-0602821-01</span></div>
+          <div class="prow"><span>Reference</span><span>${esc(O.name)}</span></div>
+          <div class="prow"><span>Amount</span><span><b>$${total().toFixed(2)}</b></span></div>
+        `}
+      </div>
+      <button class="btn" onclick="finishOrder()">Done ✓</button>
+    </div>`;
+}
+
+function pick(f,v){
+  syncText();
+  O[f]=v;
+  if(f==='delivery' && v==='pickup'){
+    O.deliveryFee=null; O.deliveryDistance=null;
+  }
+  if(f==='delivery' && v==='deliver'){
+    O.paymentMethod='bank';
+  }
+  render();
+}
+function setArr(f,i,v){O[f][i]=v;}
+function setNum(f,v,mn,mx){let n=parseInt(v)||0;n=Math.max(mn,Math.min(mx,n));O[f]=n;}
+function updateTotal(){const el=document.querySelector('.ta');if(el)el.textContent='$'+total().toFixed(2);}
+function nudge(field,dir,mn,mx,inputId){
+  let n=(O[field]||0)+dir;
+  n=Math.max(mn,Math.min(mx,n));
+  O[field]=n;
+  const el=document.getElementById(inputId);
+  if(el)el.value=n;
+}
+function setExtraTopping(i,val){
+  O.extraToppingSelections[i]=val;
+}
+function toggleAddons(){
+  O.showAddons = true;
+  document.getElementById('addons-toggle').style.display = 'none';
+  document.getElementById('addons-panel').style.display = 'block';
+}
+function setExtraIcing(i,val){
+  O.extraIcingSelections[i]=val;
+}
+function updateExtraTopping(val){
+  setNum('extraToppingCount',val,0,10);
+  O.extraToppingSelections = O.extraToppingSelections.slice(0,O.extraToppingCount);
+  updateTotal();
+  const wrap=document.getElementById('extra-topping-note');
+  if(!wrap) return;
+  wrap.style.display=O.extraToppingCount>0?'block':'none';
+  wrap.innerHTML=Array.from({length:O.extraToppingCount}).map((_,i)=>`
+    <label class="lbl">Extra topping ${i+1}</label>
+    <select onchange="setExtraTopping(${i},this.value)">
+      <option value="">— choose —</option>
+      ${TOPPINGS.map(t=>`<option ${(O.extraToppingSelections[i]||'')=== t?'selected':''}>${t}</option>`).join('')}
+    </select>`).join('');
+}
+function updateExtraIcing(val){
+  setNum('extraIcingCount',val,0,5);
+  O.extraIcingSelections = O.extraIcingSelections.slice(0,O.extraIcingCount);
+  updateTotal();
+  const wrap=document.getElementById('extra-icing-list');
+  if(!wrap) return;
+  wrap.style.display=O.extraIcingCount>0?'block':'none';
+  wrap.innerHTML=Array.from({length:O.extraIcingCount}).map((_,i)=>`
+    <label class="lbl">Extra icing ${i+1}</label>
+    <select onchange="setExtraIcing(${i},this.value)">
+      <option value="">— choose —</option>
+      ${ICINGS.map(ic=>`<option ${(O.extraIcingSelections[i]||'')=== ic?'selected':''}>${ic}</option>`).join('')}
+    </select>`).join('');
+}
+
+function goReview(){
+  syncText();
+  const k=KITS[O.kit];
+  const errs=[];
+  if(!O.name.trim())  errs.push("name");
+  if(!O.email.trim()) errs.push("email");
+  if(O.delivery==='deliver' && !O.address.trim()) errs.push("street address");
+  if(O.delivery==='deliver' && !O.suburb.trim())  errs.push("suburb");
+  if(!O.kit)          errs.push("a kit");
+  if(!O.paymentMethod) errs.push("a payment method");
+  if(errs.length){
+    $("#oErr").innerHTML=`<div class="err">Please fill in: ${errs.join(", ")}.</div>`;
+    $("#oErr").scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  stage="review"; render();
+  scrollToOrder();
+}
+
+function goBack(){stage="form";render();scrollToOrder();}
+
+async function submitOrder(){
+  const btn=$("#submitBtn");
+  btn.disabled=true; btn.textContent="Sending…";
+  const k=KITS[O.kit];
+  const payload={
+    createdAt:new Date().toISOString(),
+    name:O.name.trim(), email:O.email.trim(),
+    delivery:O.delivery,
+    address:O.delivery==='deliver'?`${O.address}, ${O.suburb}, North Shore, Auckland`:'ASHS pickup',
+    deliveryNote:O.deliveryNote||"",
+    deliveryDistance:O.deliveryDistance||0,
+    deliveryFee:O.deliveryFee||0,
+    paymentMethod:O.paymentMethod||"",
+    kit:O.kit, kitName:k.name, cookieName:k.cookieName, kitPrice:k.price,
+    icings:k.icings,
+    toppings:k.toppings,
+    extraCookies:O.extraCookies,
+    extraIcingCount:O.extraIcingCount,
+    extraIcingSelections:O.extraIcingSelections.filter(Boolean),
+    extraToppingCount:O.extraToppingCount,
+    extraToppingSelections:O.extraToppingSelections.filter(Boolean),
+    specialRequests:O.specialRequests,
+    total:total()
+  };
+  try{
+    await fetch(SCRIPT_URL,{
+      method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    stage="done"; render();
+    scrollToOrder();
+  }catch(e){
+    btn.disabled=false; btn.textContent="Confirm & place order ✓";
+    $("#oErr").innerHTML=`<div class="err">Couldn't send your order. Check your connection and try again.</div>`;
+  }
+}
+
+function resetOrder(){O=blank();stage="form";render();scrollToOrder();}
+function finishOrder(){O=blank();stage="form";render();window.scrollTo({top:0,behavior:"smooth"});}
+
+// ===== COOKIE PONG =====
+let pongGame = null;
+
+function openCookiePong(){
+  document.getElementById('pong-modal').style.display='flex';
+  startCookiePong();
+}
+function closeCookiePong(){
+  document.getElementById('pong-modal').style.display='none';
+  if(pongGame){cancelAnimationFrame(pongGame.raf);pongGame=null;}
+}
+function playBeep(freq){
+  try{
+    const ac=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.connect(g);g.connect(ac.destination);
+    o.frequency.value=freq;o.type='sine';
+    g.gain.setValueAtTime(.08,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.12);
+    o.start();o.stop(ac.currentTime+.13);
+  }catch(e){}
+}
+function startCookiePong(){
+  if(pongGame){cancelAnimationFrame(pongGame.raf);pongGame=null;}
+  const canvas=document.getElementById('pong-canvas');
+  const ctx=canvas.getContext('2d');
+  // Resize to fit screen
+  const W=Math.min(580,window.innerWidth-40);
+  const H=Math.round(W*0.637);
+  canvas.width=W;canvas.height=H;
+  const PH=H*.22,PW=Math.max(8,W*.022),BR=W*.028;
+  const SPD=W*.0068;
+  const g={
+    ball:{x:W/2,y:H/2,vx:SPD,vy:SPD*.6},
+    player:{y:H/2-PH/2,score:0},
+    ai:{y:H/2-PH/2,score:0},
+    mouseY:H/2,raf:null,done:false,
+    W,H,PH,PW,BR,SPD
+  };
+  pongGame=g;
+  canvas.onmousemove=e=>{const r=canvas.getBoundingClientRect();g.mouseY=(e.clientY-r.top)*(H/r.height);};
+  canvas.ontouchmove=e=>{e.preventDefault();const r=canvas.getBoundingClientRect();g.mouseY=(e.touches[0].clientY-r.top)*(H/r.height);};
+  function resetBall(dir){g.ball.x=W/2;g.ball.y=H/2+((Math.random()-.5)*H*.3);g.ball.vx=SPD*dir;g.ball.vy=(Math.random()-.5)*SPD*1.2;}
+  function update(){
+    if(g.done)return;
+    const{ball,player,ai}=g;
+    ball.x+=ball.vx;ball.y+=ball.vy;
+    if(ball.y-BR<0){ball.y=BR;ball.vy=Math.abs(ball.vy);}
+    if(ball.y+BR>H){ball.y=H-BR;ball.vy=-Math.abs(ball.vy);}
+    player.y=Math.max(0,Math.min(H-PH,g.mouseY-PH/2));
+    const aiC=ai.y+PH/2,aiSpd=SPD*.9;
+    if(aiC<ball.y-5)ai.y=Math.min(H-PH,ai.y+aiSpd);
+    else if(aiC>ball.y+5)ai.y=Math.max(0,ai.y-aiSpd);
+    // Player hit
+    const px=PW+10;
+    if(ball.vx<0&&ball.x-BR<px+PW&&ball.x-BR>px-6&&ball.y+BR>player.y&&ball.y-BR<player.y+PH){
+      ball.vx=Math.abs(ball.vx)*1.04;
+      ball.vy+=(ball.y-(player.y+PH/2))*.13;
+      ball.x=px+PW+BR;playBeep(220);
+    }
+    // AI hit
+    const ax=W-PW-10;
+    if(ball.vx>0&&ball.x+BR>ax&&ball.x+BR<ax+PW+6&&ball.y+BR>ai.y&&ball.y-BR<ai.y+PH){
+      ball.vx=-Math.abs(ball.vx)*1.04;
+      ball.vy+=(ball.y-(ai.y+PH/2))*.13;
+      ball.x=ax-BR;playBeep(330);
+    }
+    const maxSpd=SPD*2.8;
+    if(Math.abs(ball.vx)>maxSpd)ball.vx=maxSpd*Math.sign(ball.vx);
+    if(Math.abs(ball.vy)>maxSpd)ball.vy=maxSpd*Math.sign(ball.vy);
+    if(ball.x+BR<0){ai.score++;playBeep(100);resetBall(1);}
+    if(ball.x-BR>W){player.score++;playBeep(500);resetBall(-1);}
+    if(player.score>=5||ai.score>=5)g.done=true;
+  }
+  function draw(){
+    const{ball,player,ai}=g;
+    ctx.fillStyle='#1A0E08';ctx.fillRect(0,0,W,H);
+    // Stars/dots bg
+    ctx.fillStyle='rgba(255,255,255,.04)';
+    for(let i=0;i<30;i++){ctx.beginPath();ctx.arc((i*73)%W,(i*47)%H,1.5,0,Math.PI*2);ctx.fill();}
+    // Centre line
+    ctx.save();ctx.setLineDash([8,8]);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();ctx.restore();
+    // Paddles
+    ctx.fillStyle='#F4A8B8';ctx.beginPath();ctx.roundRect(10,player.y,PW,PH,4);ctx.fill();
+    ctx.fillStyle='#A8C5DA';ctx.beginPath();ctx.roundRect(W-PW-10,ai.y,PW,PH,4);ctx.fill();
+    // Ball
+    ctx.font=`${BR*2.5}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('🍪',ball.x,ball.y);
+    // Scores
+    ctx.fillStyle='rgba(255,255,255,.28)';ctx.font=`bold ${H*.14}px 'Fraunces',serif`;ctx.textAlign='center';
+    ctx.fillText(player.score,W*.25,H*.18);ctx.fillText(ai.score,W*.75,H*.18);
+    ctx.font=`${H*.048}px 'DM Sans',sans-serif`;ctx.fillStyle='rgba(255,255,255,.3)';
+    ctx.fillText('YOU',W*.25,H*.28);ctx.fillText('AI 🤖',W*.75,H*.28);
+    // Win screen
+    if(g.done){
+      ctx.fillStyle='rgba(26,14,8,.82)';ctx.fillRect(0,0,W,H);
+      const won=player.score>=5;
+      ctx.fillStyle=won?'#F4A8B8':'#A8C5DA';
+      ctx.font=`bold ${H*.13}px 'Fraunces',serif`;ctx.textAlign='center';
+      ctx.fillText(won?'YOU WIN! 🍪':'AI WINS 😤',W/2,H*.44);
+      ctx.fillStyle='rgba(255,255,255,.5)';ctx.font=`${H*.057}px 'DM Sans',sans-serif`;
+      ctx.fillText('tap to play again',W/2,H*.62);
+    }
+  }
+  canvas.onclick=()=>{if(g.done){canvas.onclick=null;startCookiePong();}};
+  function loop(){update();draw();g.raf=requestAnimationFrame(loop);}
+  g.raf=requestAnimationFrame(loop);
+}
+// Close on backdrop click
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('pong-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeCookiePong();});
+});
+
+// Click me bubble on footer scroll
+const footBrand = document.getElementById('foot-brand');
+const clickBubble = document.getElementById('click-bubble');
+let bubbleShown = false;
+const footObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting && !bubbleShown){
+      bubbleShown = true;
+      setTimeout(() => {
+        clickBubble.classList.add('show');
+        // wiggle after popping in
+        setTimeout(() => { clickBubble.style.animation = 'wiggle .5s ease 3'; }, 400);
+      }, 400);
+    }
+  });
+}, {threshold: 0.8});
+footObserver.observe(footBrand);
+
+// Hide bubble once clicked
+footBrand.addEventListener('click', () => {
+  clickBubble.classList.remove('show');
+});
+
+// ===== ADDRESS MAP + AUTOCOMPLETE =====
+// Kitchen origin - 17 Newbury Place, Glenfield, Auckland (update lat/lon if needed)
+const KITCHEN_LAT = -36.7805;
+const KITCHEN_LON = 174.7180;
+const KITCHEN_ADDRESS = "17 Newbury Place, Glenfield";
+const DELIVERY_RATE_PER_KM = 2; // $ per km - change here if you want different pricing
+
+let _mapInstance = null;
+let _mapMarker = null;
+let _kitchenMarker = null;
+let _routeLine = null;
+let _autoTimer = null;
+let _suggestions = [];
+const NORTH_SHORE_CENTER = [-36.78, 174.75];
+
+function haversine(lat1,lon1,lat2,lon2){
+  const R=6371,toRad=x=>x*Math.PI/180;
+  const dLat=toRad(lat2-lat1),dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+function initMap(){
+  const el = document.getElementById('leaflet-map');
+  if(!el) return;
+  if(_mapInstance && el._leaflet_id) return;
+  if(_mapInstance){ try{_mapInstance.remove();}catch(e){} _mapInstance=null; _mapMarker=null; _kitchenMarker=null; _routeLine=null; }
+  _mapInstance = L.map('leaflet-map',{scrollWheelZoom:false}).setView(NORTH_SHORE_CENTER, 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+    maxZoom:19
+  }).addTo(_mapInstance);
+  // Re-pin if address already saved
+  if(O.addressLat && O.addressLon){
+    placePin(O.addressLat, O.addressLon, `${O.address}, ${O.suburb}`);
+  }
+  setTimeout(()=>{ if(_mapInstance) _mapInstance.invalidateSize(); }, 100);
+}
+
+function placePin(lat, lon, label){
+  if(!_mapInstance) initMap();
+  if(!_mapInstance) return;
+  if(_mapMarker){ _mapInstance.removeLayer(_mapMarker); _mapMarker=null; }
+  const icon = L.divIcon({
+    html:`<div style="background:#F4A8B8;width:32px;height:32px;border-radius:50%;border:3px solid #E88AA0;box-shadow:0 4px 14px rgba(42,24,16,.4);display:grid;place-items:center;font-size:15px;">📍</div>`,
+    className:'',iconSize:[32,32],iconAnchor:[16,16]
+  });
+  _mapMarker = L.marker([lat,lon],{icon}).addTo(_mapInstance);
+  if(label) _mapMarker.bindPopup(label).openPopup();
+  _mapInstance.setView([lat,lon],16);
+  O.addressLat = lat; O.addressLon = lon;
+  // Calculate delivery distance & fee (silently)
+  const dist = haversine(KITCHEN_LAT, KITCHEN_LON, lat, lon);
+  O.deliveryDistance = dist;
+  O.deliveryFee = Math.round(dist * DELIVERY_RATE_PER_KM * 2) / 2;
+  showDeliveryFee();
+  updateTotal();
+}
+
+function showDeliveryFee(){
+  const el = document.getElementById('delivery-fee-display');
+  if(!el) return;
+  if(O.deliveryFee != null && O.delivery === 'deliver'){
+    el.innerHTML = `
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;">
+        <span>🚗 Delivery fee</span>
+        <span style="font-weight:900;color:var(--pink-deep);font-family:'Fraunces',serif;font-size:1.15rem;">+$${O.deliveryFee.toFixed(2)}</span>
+      </div>
+    `;
+    el.style.display = 'block';
+  }
+}
+
+function onAddressInput(val){
+  O.address = val;
+  clearTimeout(_autoTimer);
+  const list = document.getElementById('addr-suggestions');
+  if(val.length < 3){ if(list) list.innerHTML=''; return; }
+  if(list) list.innerHTML = `<div class="addr-loading">Searching addresses…</div>`;
+  _autoTimer = setTimeout(()=>searchAddress(val), 450);
+}
+
+async function searchAddress(query){
+  const list = document.getElementById('addr-suggestions');
+  if(!list) return;
+  // Bias search to North Shore Auckland
+  const q = `${query}, Auckland, New Zealand`;
+  try{
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&countrycodes=nz&addressdetails=1`,
+      { headers:{'Accept-Language':'en'} }
+    );
+    const data = await res.json();
+    _suggestions = data || [];
+    if(_suggestions.length === 0){
+      list.innerHTML = `<div class="addr-loading">No matching addresses. Try a different street.</div>`;
+      return;
+    }
+    list.innerHTML = _suggestions.map((item, i) => {
+      const display = item.display_name.split(',').slice(0,3).join(', ');
+      return `<div class="addr-suggestion" onclick="pickSuggestion(${i})"><span class="pin">📍</span>${esc(display)}</div>`;
+    }).join('');
+  } catch(e){
+    list.innerHTML = `<div class="addr-loading">Couldn't search right now.</div>`;
+  }
+}
+
+function pickSuggestion(i){
+  const s = _suggestions[i];
+  if(!s) return;
+  // Extract street address (house number + street)
+  const addr = s.address || {};
+  let streetAddr = '';
+  if(addr.house_number) streetAddr += addr.house_number + ' ';
+  if(addr.road) streetAddr += addr.road;
+  if(!streetAddr) streetAddr = s.display_name.split(',')[0];
+  O.address = streetAddr.trim();
+  // Try to match suburb
+  const possibleSuburb = addr.suburb || addr.neighbourhood || addr.village || addr.town;
+  if(possibleSuburb && NORTH_SHORE_SUBURBS.includes(possibleSuburb)){
+    O.suburb = possibleSuburb;
+    const sel = document.getElementById('f-suburb');
+    if(sel) sel.value = possibleSuburb;
+  }
+  // Update street input
+  const inp = document.getElementById('f-address');
+  if(inp) inp.value = O.address;
+  // Drop pin
+  placePin(parseFloat(s.lat), parseFloat(s.lon), `${O.address}, ${O.suburb||'Auckland'}`);
+  // Clear suggestions
+  document.getElementById('addr-suggestions').innerHTML = '';
+}
+
+// When suburb changes, re-geocode using current address
+function triggerAddressMap(){
+  if(O.address && O.suburb){
+    searchAddress(`${O.address}, ${O.suburb}`).then(()=>{
+      // If suggestions found, auto-pick the first
+      if(_suggestions.length > 0) pickSuggestion(0);
+    });
+  }
+}
+// ===== END ADDRESS MAP =====
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(el => { if(el.isIntersecting) el.target.classList.add('visible'); });
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+render();
+</script>
+</body>
+</html>
